@@ -1,0 +1,11 @@
+export const FETCH_USER = 'FETCH_USER';
+export const GET_PROFILE = 'GET_PROFILE';
+export const GET_PROFILES = 'GET_PROFILES';
+export const PROFILE_ERROR = 'PROFILE_ERROR';
+export const CLEAR_PROFILE = 'CLEAR_PROFILE';
+export const SET_LOADING = 'SET_LOADING';
+export const SET_LOADING_JOB = 'SET_LOADING_JOB';
+export const GET_JOBS = 'GET_JOBS';
+export const JOB_ERROR = 'JOB_ERROR';
+export const DELETE_JOB = 'DELETE_JOB';
+export const ADD_JOB = 'ADD_JOB';
