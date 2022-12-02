@@ -4,14 +4,14 @@ module.exports = function (app) {
   app.use(
     "/auth/google",
     createProxyMiddleware({
-      target: "https://job-hunter-api.onrender.com",
+      target: "http://localhost:5000",
       changeOrigin: true,
     })
   );
   app.use(
     "/api/**",
     createProxyMiddleware({
-      target: "https://job-hunter-api.onrender.com",
+      target: "http://localhost:5000",
       changeOrigin: true,
     })
   );

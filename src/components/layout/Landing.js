@@ -21,7 +21,7 @@ const Landing = ({ isLoggedIn, loading }) => {
         </p>
         <p></p>
         <div>
-          <a href="/auth/google" className="btn btn-primary red">
+          <a href="https://job-hunter-api.onrender.com/auth/google" className="btn btn-primary red">
             <i className="fab fa-google" /> Login With Google
           </a>
         </div>
