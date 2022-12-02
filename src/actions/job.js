@@ -1,5 +1,5 @@
-import api from "../utils/api";
 import M from "materialize-css/dist/js/materialize.min.js";
+import apiInstance from "../utils/api";
 import {
   GET_JOBS,
   JOB_ERROR,
@@ -11,7 +11,7 @@ import {
 export const getJobs = () => async dispatch => {
 	try {
     dispatch({type: SET_LOADING_JOB })
-		const res = await api.get('/jobs')
+		const res = await apiInstance.get('/jobs')
 
 		dispatch({
 			type: GET_JOBS,
@@ -29,7 +29,7 @@ export const getJobs = () => async dispatch => {
 export const addJob = formData => async dispatch => {
   try {
     dispatch({type: SET_LOADING_JOB })
-    const res = await api.post('/jobs', formData);
+    const res = await apiInstance.post('/jobs', formData);
     M.toast({html: 'Job Added'})
 
     dispatch({
@@ -48,7 +48,7 @@ export const addJob = formData => async dispatch => {
 export const deleteJob = id => async dispatch => {
   try {
     dispatch({type: SET_LOADING_JOB })
-    await api.delete(`/jobs/${id}`);
+    await apiInstance.delete(`/jobs/${id}`);
     M.toast({html: 'Job Deleted'})
     
     dispatch({
