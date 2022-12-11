@@ -12,7 +12,6 @@ import {
 } from "../actions/types";
 
 export const userLoginReducer = (state = {}, action) => {
-  console.log({ ...state.userInfo });
   switch (action.type) {
     case USER_LOGIN_REQUEST:
       return { loading: true };

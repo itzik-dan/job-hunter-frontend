@@ -33,9 +33,6 @@ export const editProfile = (profileData) => async (dispatch, getState) => {
       ? JSON.parse(localStorage.getItem("userInfo"))
       : null;
 
-    // console.log({ ...userInfoFromStorage });
-    // console.log(res);
-
     // Updating the profile fields in localStorage
     localStorage.setItem(
       "userInfo",
