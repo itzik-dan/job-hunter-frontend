@@ -1,20 +1,31 @@
 import React, { Fragment, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import M from "materialize-css/dist/js/materialize.min.js";
+import { logout } from "../../actions/auth";
 
-const Navbar = ({ auth }) => {
+const Navbar = () => {
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   // Material CSS configuration for displaying side navbar on mobile devices
   useEffect(() => {
     let elems = document.querySelectorAll(".sidenav");
     M.Sidenav.init(elems);
   });
+
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
+
   // Callback function for rendering Navbar links for logged in user and logged out users
   const renderContent = () => {
-    switch (auth.user) {
+    switch (userInfo) {
+      // case null:
+      //   return;
       case null:
-        return;
-      case false:
         return [
           <li key="1">
             <Link to="/community">Community</Link>
@@ -23,9 +34,7 @@ const Navbar = ({ auth }) => {
             <Link to="/tutorials">Tutorials</Link>
           </li>,
           <li key="3">
-            <a href="https://job-hunter-api.onrender.com/auth/google">
-              Login With Google
-            </a>
+            <Link to="/signin">Sign In</Link>
           </li>,
         ];
       default:
@@ -45,8 +54,8 @@ const Navbar = ({ auth }) => {
           <li key="4">
             <Link to="/account">Account</Link>
           </li>,
-          <li key="5">
-            <a href="/api/logout">
+          <li key="5" onClick={logoutHandler}>
+            <a href="#">
               <i className="fas fa-sign-out-alt" style={{ fontSize: "15px" }} />{" "}
               Logout
             </a>
@@ -59,7 +68,7 @@ const Navbar = ({ auth }) => {
     <Fragment>
       <nav className="position black">
         <div className="nav-wrapper">
-          <Link to={auth.user ? "/jobs" : "/"} className="brand-logo">
+          <Link to={userInfo?.name ? "/jobs" : "/"} className="brand-logo">
             <i className="fas fa-running" />
             Job Hunter
           </Link>
@@ -78,8 +87,4 @@ const Navbar = ({ auth }) => {
   );
 };
 
-const mapStateToProps = ({ auth }) => {
-  return { auth };
-};
-
-export default connect(mapStateToProps)(Navbar);
+export default Navbar;

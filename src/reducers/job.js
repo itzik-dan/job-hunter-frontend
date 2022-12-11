@@ -3,42 +3,40 @@ import {
   JOB_ERROR,
   DELETE_JOB,
   ADD_JOB,
-  SET_LOADING_JOB
+  SET_LOADING_JOB,
 } from "../actions/types";
 
 const initialState = {
   jobs: [],
-  job: null,
   loading: true,
   error: {},
 };
 
-export default function (state = initialState, action) {
-  const { type, payload } = action;
-
-  switch (type) {
+//Reducer for createing a post
+export const jobPostReducer = (state = initialState, action) => {
+  switch (action.type) {
     case GET_JOBS:
       return {
         ...state,
-        jobs: payload,
+        jobs: action.payload,
         loading: false,
       };
     case JOB_ERROR:
       return {
         ...state,
-        error: payload,
+        error: action.payload,
         loading: false,
       };
     case ADD_JOB:
       return {
         ...state,
-        jobs: [payload, ...state.jobs],
+        jobs: [action.payload, ...state.jobs],
         loading: false,
       };
     case DELETE_JOB:
       return {
         ...state,
-        jobs: state.jobs.filter((job) => job._id !== payload),
+        jobs: state.jobs.filter((job) => job._id !== action.payload),
         loading: false,
       };
     case SET_LOADING_JOB:
@@ -49,4 +47,4 @@ export default function (state = initialState, action) {
     default:
       return state;
   }
-}
+};

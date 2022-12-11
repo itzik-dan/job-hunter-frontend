@@ -1,4 +1,5 @@
 import M from "materialize-css/dist/js/materialize.min.js";
+import apiInstance from "../utils/api";
 import {
   GET_JOBS,
   JOB_ERROR,
@@ -6,15 +7,21 @@ import {
   ADD_JOB,
   SET_LOADING_JOB,
 } from "./types";
-import axios from "axios";
-import { API_URL } from "../utils/api";
 
-axios.defaults.withCredentials = true;
-
-export const getJobs = () => async (dispatch) => {
+export const getJobs = () => async (dispatch, getState) => {
   try {
     dispatch({ type: SET_LOADING_JOB });
-    const res = await axios.get(`${API_URL}/jobs`);
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const res = await apiInstance.get("/jobs", config);
 
     dispatch({
       type: GET_JOBS,
@@ -29,10 +36,20 @@ export const getJobs = () => async (dispatch) => {
 };
 
 // Add post
-export const addJob = (formData) => async (dispatch) => {
+export const addJob = (formData) => async (dispatch, getState) => {
   try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
     dispatch({ type: SET_LOADING_JOB });
-    const res = await axios.post(`${API_URL}/jobs`, formData);
+    const res = await apiInstance.post("/jobs", formData, config);
     M.toast({ html: "Job Added" });
 
     dispatch({
@@ -48,10 +65,20 @@ export const addJob = (formData) => async (dispatch) => {
 };
 
 // Delete a job post
-export const deleteJob = (id) => async (dispatch) => {
+export const deleteJob = (id) => async (dispatch, getState) => {
   try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
     dispatch({ type: SET_LOADING_JOB });
-    await axios.delete(`${API_URL}/jobs/${id}`);
+    await apiInstance.delete(`/jobs/${id}`, config);
     M.toast({ html: "Job Deleted" });
 
     dispatch({

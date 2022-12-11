@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const RequireLogin = () => {
   // The functional component is will pop up when logged out user tries to enter auth links
@@ -17,9 +18,7 @@ const RequireLogin = () => {
           </div>
           <div className="card-action">
             <h5>
-              <a href="https://job-hunter-api.onrender.com/auth/google">
-                Login
-              </a>
+              <Link to="/signin">Login</Link>
             </h5>
           </div>
         </div>

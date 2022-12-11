@@ -1,51 +1,64 @@
 // import { setAlert } from "./alert";
 import M from "materialize-css/dist/js/materialize.min.js";
+import apiInstance from "../utils/api";
 
 import {
-  GET_PROFILE,
   GET_PROFILES,
   PROFILE_ERROR,
-  CLEAR_PROFILE,
   SET_LOADING,
+  USER_LOGOUT,
+  USER_UPDATE_FAIL,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
 } from "./types";
 
-import axios from "axios";
-import { API_URL } from "../utils/api";
-
-axios.defaults.withCredentials = true;
-
-// Fetch logged in user profile
-export const getCurrentProfile = () => async (dispatch) => {
+// Update user profile
+export const editProfile = (profileData) => async (dispatch, getState) => {
   try {
-    dispatch({ type: SET_LOADING });
-    const res = await axios.get(`${API_URL}/profile/me`);
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    dispatch({ type: USER_UPDATE_REQUEST });
+    const res = await apiInstance.patch("/profile", profileData, config);
+
+    // Getting current value from local storage
+    const userInfoFromStorage = localStorage.getItem("userInfo")
+      ? JSON.parse(localStorage.getItem("userInfo"))
+      : null;
+
+    // console.log({ ...userInfoFromStorage });
+    // console.log(res);
+
+    // Updating the profile fields in localStorage
+    localStorage.setItem(
+      "userInfo",
+      JSON.stringify({
+        ...userInfoFromStorage,
+        name: res.data.updatedUser.name,
+        company: res.data.updatedUser.company,
+        university: res.data.updatedUser.university,
+        position: res.data.updatedUser.position,
+        contact: res.data.updatedUser.contact,
+      })
+    );
+
+    // Updating user info in redux store
     dispatch({
-      type: GET_PROFILE,
+      type: USER_UPDATE_SUCCESS,
       payload: res.data,
     });
-  } catch (err) {
-    dispatch({
-      type: PROFILE_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
-  }
-};
 
-// Create or update profile
-export const AddProfile = (profileData) => async (dispatch) => {
-  try {
-    dispatch({ type: SET_LOADING });
-    const res = await axios.post(`${API_URL}/profile`, profileData);
     M.toast({ html: "Profile Updated" });
-
-    dispatch({
-      type: GET_PROFILE,
-      payload: res.data,
-    });
   } catch (err) {
     dispatch({
-      type: PROFILE_ERROR,
+      type: USER_UPDATE_FAIL,
       payload: { msg: err.response.statusText, status: err.response.status },
     });
   }
@@ -55,7 +68,7 @@ export const AddProfile = (profileData) => async (dispatch) => {
 export const getAllProfiles = () => async (dispatch) => {
   try {
     dispatch({ type: SET_LOADING });
-    const res = await axios.get(`${API_URL}/profile`);
+    const res = await apiInstance.get("/profile");
 
     dispatch({
       type: GET_PROFILES,
@@ -70,13 +83,24 @@ export const getAllProfiles = () => async (dispatch) => {
 };
 
 // Delete profile
-export const deleteProfile = () => async (dispatch) => {
+export const deleteProfile = () => async (dispatch, getState) => {
+  const {
+    userLogin: { userInfo },
+  } = getState();
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userInfo.token}`,
+    },
+  };
+
   if (window.confirm("Are you sure? This can NOT be undone!")) {
     try {
       dispatch({ type: SET_LOADING });
-      await axios.delete(`${API_URL}/profile`);
+      await apiInstance.delete("/profile", config);
+      localStorage.removeItem("userInfo");
 
-      dispatch({ type: CLEAR_PROFILE });
+      dispatch({ type: USER_LOGOUT });
       M.toast({ html: "Profile Deleted" });
     } catch (err) {
       dispatch({

@@ -1,35 +1,28 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import Spinner from '../layout/Spinner';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Route, Redirect } from "react-router-dom";
+import Spinner from "../layout/Spinner";
 
 // Funcional component for protecting routes
-const PrivateRoute = ({
-  component: Component,
-  auth: { user, loading },
-  ...rest
-}) => (
-  <Route
-    {...rest}
-    render={props =>
-      loading ? (
-        <Spinner />
-      ) : user ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to="/login-alert" />
-      )
-    }
-  />
-);
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const userLogin = useSelector((state) => state.userLogin);
 
-PrivateRoute.propTypes = {
-  auth: PropTypes.object.isRequired
+  const { loading, userInfo } = userLogin;
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        loading ? (
+          <Spinner />
+        ) : userInfo ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/signin" />
+        )
+      }
+    />
+  );
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
-});
-
-export default connect(mapStateToProps)(PrivateRoute);
+export default PrivateRoute;
